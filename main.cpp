@@ -19,6 +19,7 @@
 #include <chrono>
 #include <thread>
 
+#define POLL_TIMEOUT_MS 100
 
 using namespace std;
 using std::chrono::duration_cast;
@@ -468,9 +469,9 @@ int main(int argc, char *argv[])
         int interval;
         start = steady_clock::now();
         while(1) {
-            n = epoll_wait(epfd, events, 20, 500);
+            n = epoll_wait(epfd, events, 20, POLL_TIMEOUT_MS);
             interval = duration_cast<milliseconds>(steady_clock::now() - start).count() ;
-            if (interval >= 500 ) {  //checking is it time to look through all gpios
+            if (interval >= POLL_TIMEOUT_MS ) {  //checking is it time to look through all gpios
                 mqtt_handler->UpdateChannelValues();
                 start = steady_clock::now();
             } else {
